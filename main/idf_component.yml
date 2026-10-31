@@ -1,0 +1,4 @@
+dependencies:
+  idf: ">=6.0.0,<6.2.0"
+  espressif/libsodium: "1.0.22~1"
+  espressif/cjson: ">=1.7.19,<2"
