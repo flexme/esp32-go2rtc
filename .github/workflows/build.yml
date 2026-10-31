@@ -1,0 +1,31 @@
+name: Build and test
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  host:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: sh tests/run_host.sh
+      - run: python3 tests/test_public_scope.py
+  firmware:
+    runs-on: ubuntu-latest
+    container: espressif/idf:v6.0.1
+    steps:
+      - uses: actions/checkout@v4
+      - shell: bash
+        run: |
+          . /opt/esp/idf/export.sh
+          idf.py build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: esp32-s3-firmware
+          path: |
+            build/esp32_go2rtc.bin
+            build/bootloader/bootloader.bin
+            build/partition_table/partition-table.bin
+            build/flash_args
